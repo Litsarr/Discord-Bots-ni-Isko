@@ -1,0 +1,9 @@
+# Ignore all node_modules folders across all bots
+**/node_modules/
+
+# Ignore environment files
+**/.env
+
+# Ignore logs, cache, etc.
+*.log
+.DS_Store
