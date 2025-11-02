@@ -5,7 +5,7 @@ dotenv.config();
 const commands = [
   new SlashCommandBuilder()
     .setName("killed")
-    .setDescription("Track when a boss was killed")
+    .setDescription("Mark a boss as killed and set a respawn timer")
     .addStringOption((option) =>
       option
         .setName("boss")
@@ -13,13 +13,29 @@ const commands = [
         .setRequired(true)
     )
     .addNumberOption((option) =>
-      option
-        .setName("hours")
-        .setDescription("Hours until respawn")
-        .setRequired(true)
+      option.setName("hours").setDescription("Respawn time in hours")
     )
-    .toJSON(),
-];
+    .addNumberOption((option) =>
+      option.setName("minutes").setDescription("Respawn time in minutes")
+    )
+    .addNumberOption((option) =>
+      option.setName("seconds").setDescription("Respawn time in seconds")
+    ),
+
+  new SlashCommandBuilder()
+    .setName("timeleft")
+    .setDescription("Show remaining timers for all bosses"),
+
+  new SlashCommandBuilder()
+    .setName("removetimer")
+    .setDescription("Remove a boss timer manually")
+    .addStringOption((option) =>
+      option
+        .setName("boss")
+        .setDescription("Name of the boss to remove")
+        .setRequired(true)
+    ),
+].map((command) => command.toJSON());
 
 const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
 
@@ -31,11 +47,9 @@ const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
         process.env.CLIENT_ID,
         process.env.GUILD_ID
       ),
-      {
-        body: commands,
-      }
+      { body: commands }
     );
-    console.log("✅ Commands registered successfully.");
+    console.log("✅ Slash commands registered successfully.");
   } catch (error) {
     console.error(error);
   }
